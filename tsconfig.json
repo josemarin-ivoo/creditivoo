@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "jsx": "react-native",           // <- fixes ts(6142)
+    "allowJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": ["react", "react-native"],
+    "target": "es2017",            // or "es2018", "es2020"
+    "lib": ["es2017", "dom"],      // includes Promise and async/await
+    "module": "esnext",
+    "downlevelIteration": true,
+  },
+  "include": ["App.tsx", "src"]
+}
