@@ -2,17 +2,20 @@ import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
-  StatusBar,
   Text,
-  ScrollView,
   Image,
   Linking,
+  Dimensions,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import {Button, Input, Checkbox} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {Button, Input, Checkbox} from '../../components';
+import RegisterLayout from '../../components/layouts/RegisterLayout';
+import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '../../styles';
 import {SCREENS} from '@shared-constants';
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -26,136 +29,104 @@ const RegisterScreen: React.FC = () => {
       screen: SCREENS.OTP_VERIFICATION,
     });
 
-    // Navigate to OTP verification screen
-    // Always navigate, validation will be handled on the OTP screen if needed
     (navigation as any).navigate(SCREENS.OTP_VERIFICATION, {
       phoneNumber: phoneNumber.trim() || '',
     });
   };
 
-  const handleTermsPress = () => {
-    // TODO: Open terms and conditions
-    Linking.openURL('https://ivoo.app/terms');
-  };
+  const logo = (
+    <Image
+      source={require('../../images/creditivo-logo-full.png')}
+      style={styles.logo}
+      resizeMode="contain"
+    />
+  );
 
-  const handlePrivacyPress = () => {
-    // TODO: Open privacy policy
-    Linking.openURL('https://ivoo.app/privacy');
-  };
+  const content = (
+    <>
+      <View style={styles.illustrationContainer}>
+        <Image
+          source={require('../../images/onboarding/mobile-register-phone.png')}
+          style={styles.phoneIllustration}
+          resizeMode="contain"
+        />
+      </View>
 
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        bounces={true}
-        overScrollMode="always"
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        keyboardShouldPersistTaps="handled">
-        {/* Creditivoo Logo */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../images/creditivo-logo-full.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
+      <Text style={styles.title}>Ingresa tu número telefónico</Text>
 
-        {/* Phone Illustration */}
-        <View style={styles.illustrationContainer}>
-          <Image
-            source={require('../../images/onboarding/mobile-register-phone.png')}
-            style={styles.phoneIllustration}
-            resizeMode="contain"
-          />
-        </View>
+      <Text style={styles.subtitle}>
+        Te enviaremos un SMS con un código de 6 dígitos para validar tu teléfono
+        😉
+      </Text>
 
-        {/* Title */}
-        <Text style={styles.title}>Ingresa tu número de celular</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.formArea}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+        <Input
+          placeholder="+58 (___) ___ ____"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+          containerStyle={styles.inputWrapper}
+        />
 
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>
-          Te enviaremos un SMS con un código de 6 dígitos para validar tu
-          celular 😊
-        </Text>
-
-        {/* Phone Input */}
-        <View style={styles.inputContainer}>
-          <Input
-            placeholder="+58 (___)"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-            containerStyle={styles.inputWrapper}
-          />
-        </View>
-
-        {/* Terms and Conditions Checkbox */}
         <View style={styles.termsContainer}>
           <Checkbox
             checked={acceptTerms}
             onToggle={() => setAcceptTerms(!acceptTerms)}
             style={styles.checkbox}
+            size={18}
           />
-          <View style={styles.termsTextContainer}>
-            <Text style={styles.termsText}>
-              Acepto los{' '}
-              <Text style={styles.termsLink} onPress={handleTermsPress}>
-                términos de uso
-              </Text>{' '}
-              y{' '}
-              <Text style={styles.termsLink} onPress={handlePrivacyPress}>
-                tratamiento de datos personales de IVOO APP.
-              </Text>
+          <Text style={styles.termsText}>
+            Acepto los{' '}
+            <Text
+              style={styles.termsLink}
+              onPress={() => Linking.openURL('https://ivoo.app/terms')}>
+              términos de uso
+            </Text>{' '}
+            y{' '}
+            <Text
+              style={styles.termsLink}
+              onPress={() => Linking.openURL('https://ivoo.app/privacy')}>
+              tratamiento de datos personales de IVOO APP.
             </Text>
-          </View>
+          </Text>
         </View>
+      </KeyboardAvoidingView>
+    </>
+  );
 
-        {/* Continue Button */}
-        <Button
-          onPress={handleContinue}
-          title="Continuar"
-          style={styles.continueButton}
-        />
+  const bottomAction = (
+    <Button
+      onPress={handleContinue}
+      title="Continuar"
+      style={styles.continueButton}
+    />
+  );
 
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
-      </ScrollView>
-    </SafeAreaView>
+  return (
+    <>
+      <RegisterLayout
+        contentPaddingTop={SCREEN_HEIGHT * 0.09}
+        logo={logo}
+        bottomAction={bottomAction}>
+        {content}
+      </RegisterLayout>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingBottom: 10,
-  },
-  logoContainer: {
-    width: 272,
-    height: 42,
-    marginTop: 83,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: SCREEN_WIDTH * 0.72,
+    height: SCREEN_WIDTH * 0.72 * 0.154,
   },
   illustrationContainer: {
-    width: 120,
-    height: 169,
-    marginTop: 61,
+    width: SCREEN_WIDTH * 0.32,
+    height: SCREEN_WIDTH * 0.32 * 1.408,
+    maxHeight: SCREEN_HEIGHT * 0.2, // Limit height on small screens
+    marginBottom: SCREEN_HEIGHT * 0.015, // Reduced spacing
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -164,72 +135,52 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    fontSize: 24,
+    fontSize: SCREEN_WIDTH * 0.063,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interBold,
     fontWeight: IVOO_TYPOGRAPHY.fontWeight.bold,
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
     color: IVOO_COLORS.black,
     textAlign: 'center',
-    marginTop: 84,
-    width: 336,
+    marginTop: SCREEN_HEIGHT * 0.04, // Increased space between phone image and title
+    marginBottom: SCREEN_HEIGHT * 0.008, // Reduced spacing
+    width: SCREEN_WIDTH * 0.92,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: SCREEN_WIDTH * 0.042,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
-    fontWeight: IVOO_TYPOGRAPHY.fontWeight.regular,
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
     color: '#676464',
     textAlign: 'center',
-    marginTop: 10,
-    width: 296,
+    marginBottom: SCREEN_HEIGHT * 0.03, // Reduced spacing
+    width: SCREEN_WIDTH * 0.85,
   },
-  inputContainer: {
-    marginTop: 28,
+  formArea: {
+    width: SCREEN_WIDTH * 0.75, // Same width as terms container
     alignItems: 'center',
+    flexShrink: 1, // Allow shrinking on small screens
   },
   inputWrapper: {
-    marginTop: 0,
+    width: '100%',
   },
   termsContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginTop: 28,
-    width: 303,
-    paddingHorizontal: 0,
+    marginTop: SCREEN_HEIGHT * 0.03, // Reduced spacing
+    width: SCREEN_WIDTH * 0.75,
+    flexShrink: 1, // Allow shrinking on small screens
   },
   checkbox: {
-    marginRight: 9,
+    marginRight: SCREEN_WIDTH * 0.024,
     marginTop: 2,
   },
-  termsTextContainer: {
-    flex: 1,
-  },
   termsText: {
-    fontSize: 12,
+    flex: 1,
+    fontSize: SCREEN_WIDTH * 0.032,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
-    fontWeight: IVOO_TYPOGRAPHY.fontWeight.regular,
-    lineHeight: 18,
     color: '#828282',
   },
   termsLink: {
     textDecorationLine: 'underline',
     color: '#828282',
   },
-  continueButton: {
-    marginTop: 60,
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: IVOO_SPACING.homeIndicatorBottom,
-    left: '50%',
-    marginLeft: IVOO_SPACING.homeIndicatorMargin,
-    width: IVOO_SPACING.homeIndicatorWidth,
-    height: IVOO_SPACING.homeIndicatorHeight,
-    backgroundColor: IVOO_COLORS.black,
-    borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
-  },
+  continueButton: {},
 });
 
 export default RegisterScreen;

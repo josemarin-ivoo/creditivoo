@@ -31,7 +31,7 @@ import OnboardingScreen from '@features/onboarding/screens/OnboardingScreen';
 
 import CreditivooLogin from '../CreditivooLogin';
 
-import CreditivooRegister from '../CreditivooRegister';
+import CreditivooRegisterScreen from '../CreditivooRegister';
 
 import OTPVerificationScreen from '../views/signup/OTPVerificationScreen';
 import EmailInputScreen from '../views/signup/EmailInputScreen';
@@ -83,7 +83,7 @@ const Navigation = () => {
           />
           <Stack.Screen
             name={SCREENS.REGISTER}
-            component={CreditivooRegister}
+            component={CreditivooRegisterScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -211,7 +211,7 @@ const Navigation = () => {
           <BottomSheetModalProvider>
             <MenuProvider>
               <Stack.Navigator
-                
+                id="splash-navigator"
               >
                 <Stack.Screen
                   name={SCREENS.SPLASH}
@@ -236,7 +236,7 @@ const Navigation = () => {
         <BottomSheetModalProvider>
           <MenuProvider>
             <Stack.Navigator
-              
+              id="main-app-navigator"
               initialRouteName={
                 !isLoggedIn && !isAutoLoginLoading
                   ? SCREENS.LOGIN

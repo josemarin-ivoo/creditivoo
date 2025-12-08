@@ -1,7 +1,7 @@
 import React from 'react';
 import {TouchableOpacity, View, StyleSheet, ViewStyle} from 'react-native';
 import IconDynamic from 'react-native-dynamic-vector-icons';
-import {IVOO_COLORS} from '@creditivo-style';
+import {IVOO_COLORS} from '../styles';
 
 interface CheckboxProps {
   checked: boolean;
@@ -32,17 +32,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
           },
         ]}>
         {checked && (
-          // <IconDynamic
-          //   name="check"
-          //   type="MaterialCommunityIcons"
-          //   size={size - 2}
-          //   color={IVOO_COLORS.white}
-          // />
           <IconDynamic
-              name="check"
-              type="material-community" // <-- Corregido
-              size={size - 2}
-              color={IVOO_COLORS.white}
+            name="check"
+            type="MaterialCommunityIcons"
+            size={size - 2}
+            color={IVOO_COLORS.white}
           />
         )}
       </View>

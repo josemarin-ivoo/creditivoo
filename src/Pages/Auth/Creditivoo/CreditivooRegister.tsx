@@ -14,9 +14,7 @@ import {Button, Input, Checkbox} from '@creditivo-components';
 import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@creditivo-style';
 import {SCREENS} from '@shared-constants';
 
-export default function CreditivooRegister() { 
-
-
+const RegisterScreen: React.FC = () => {
   const navigation = useNavigation();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -260,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
+export default RegisterScreen;

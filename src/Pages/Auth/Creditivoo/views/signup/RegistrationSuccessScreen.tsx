@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  Text,
-  ScrollView,
-  Image,
-} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {View, StyleSheet, Text, Image, Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Button} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {Button} from '../../components';
+import RegisterLayout from '../../components/layouts/RegisterLayout';
+import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
 import {SCREENS} from '@shared-constants';
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const RegistrationSuccessScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -21,145 +16,90 @@ const RegistrationSuccessScreen: React.FC = () => {
     (navigation as any).navigate(SCREENS.HOME);
   };
 
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          bounces={true}
-          overScrollMode="always"
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          keyboardShouldPersistTaps="handled">
-          {/* Creditivoo Logo */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../../images/creditivo-logo-full.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+  const logo = (
+    <Image
+      source={require('../../images/creditivo-logo-full.png')}
+      style={styles.logo}
+      resizeMode="contain"
+    />
+  );
 
-          {/* Title */}
-          <Text style={styles.title}>¡Felicitaciones!</Text>
+  const content = (
+    <>
+      <Text style={styles.title}>¡Felicitaciones!</Text>
 
-          {/* Subtitle */}
-          <Text style={styles.subtitle}>Has creado tu cuenta exitosamente</Text>
+      <Text style={styles.subtitle}>Has creado tu cuenta exitosamente</Text>
 
-          {/* Success Illustration */}
-          <View style={styles.illustrationContainer}>
-            <Image
-              source={require('../../images/onboarding/ivitoo-success.png')}
-              style={styles.illustration}
-              resizeMode="contain"
-            />
-          </View>
-        </ScrollView>
-
-        {/* Continue Button - Fixed at bottom */}
-        <View style={styles.buttonContainer} pointerEvents="box-none">
-          <Button
-            onPress={handleContinue}
-            title="Continuar"
-            style={styles.continueButton}
-          />
-        </View>
-
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
+      <View style={styles.illustrationContainer}>
+        <Image
+          source={require('../../images/onboarding/ivitoo-success.png')}
+          style={styles.illustration}
+          resizeMode="contain"
+        />
       </View>
-    </SafeAreaView>
+    </>
+  );
+
+  const bottomAction = (
+    <Button
+      onPress={handleContinue}
+      title="Continuar"
+      style={styles.continueButton}
+    />
+  );
+
+  return (
+    <>
+      <RegisterLayout
+        contentPaddingTop={SCREEN_HEIGHT * 0.09}
+        logo={logo}
+        bottomAction={bottomAction}>
+        {content}
+      </RegisterLayout>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingBottom: 100, // Space for fixed button
-  },
-  logoContainer: {
-    width: 272,
-    height: 42,
-    marginTop: 83,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: SCREEN_WIDTH * 0.72,
+    height: SCREEN_WIDTH * 0.72 * 0.154,
   },
   title: {
-    fontSize: 32,
+    fontSize: SCREEN_WIDTH * 0.085,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interBold,
     fontWeight: IVOO_TYPOGRAPHY.fontWeight.bold,
-    lineHeight: 38, // Increased line height to prevent text cutting
-    letterSpacing: 0.0591,
+    lineHeight: SCREEN_HEIGHT * 0.05,
+    letterSpacing: SCREEN_WIDTH * 0.0016,
     color: IVOO_COLORS.black,
     textAlign: 'center',
-    marginTop: 74,
-    width: 300, // Increased width to prevent text cutting
+    marginBottom: SCREEN_HEIGHT * 0.01,
+    width: SCREEN_WIDTH * 0.92,
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: SCREEN_WIDTH * 0.053,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
     fontWeight: IVOO_TYPOGRAPHY.fontWeight.regular,
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
+    lineHeight: SCREEN_HEIGHT * 0.028,
+    letterSpacing: SCREEN_WIDTH * 0.0016,
     color: IVOO_COLORS.black,
     textAlign: 'center',
-    marginTop: 28,
-    width: 251,
+    marginBottom: SCREEN_HEIGHT * 0.03,
+    width: SCREEN_WIDTH * 0.85,
   },
   illustrationContainer: {
-    width: 213,
-    height: 293,
-    marginTop: 48,
+    width: SCREEN_WIDTH * 0.56,
+    height: SCREEN_WIDTH * 0.56 * 1.375,
+    maxHeight: SCREEN_HEIGHT * 0.35,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: SCREEN_HEIGHT * 0.022,
   },
   illustration: {
     width: '100%',
     height: '100%',
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingBottom: 34, // Space for home indicator
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    backgroundColor: IVOO_COLORS.white,
-    zIndex: 10, // Ensure button is above ScrollView
-  },
-  continueButton: {
-    marginTop: 0,
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: IVOO_SPACING.homeIndicatorBottom,
-    left: '50%',
-    marginLeft: IVOO_SPACING.homeIndicatorMargin,
-    width: IVOO_SPACING.homeIndicatorWidth,
-    height: IVOO_SPACING.homeIndicatorHeight,
-    backgroundColor: IVOO_COLORS.black,
-    borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
-  },
+  continueButton: {},
 });
 
 export default RegistrationSuccessScreen;

@@ -12,7 +12,7 @@ import {
   IVOO_SPACING,
   IVOO_TEXT_STYLES,
   getShadowStyle,
-} from '@creditivo-style';
+} from '../styles';
 
 interface ButtonProps {
   title: string;

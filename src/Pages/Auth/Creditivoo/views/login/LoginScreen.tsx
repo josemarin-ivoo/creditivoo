@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {SCREENS} from '@shared-constants';
-import {Button} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TEXT_STYLES} from '@ivoo/styles';
+import {Button} from '../../components';
+import {IVOO_COLORS, IVOO_SPACING, IVOO_TEXT_STYLES} from '../../styles';
+
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -68,9 +71,6 @@ const LoginScreen: React.FC = () => {
         <TouchableOpacity onPress={handleRegister} style={styles.registerLink}>
           <Text style={styles.registerText}>Registrarse</Text>
         </TouchableOpacity>
-
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 10,
   },
@@ -97,12 +98,12 @@ const styles = StyleSheet.create({
     lineHeight: IVOO_TEXT_STYLES.welcomeText.lineHeight,
     color: IVOO_COLORS.primary,
     textAlign: 'center',
-    marginTop: 197,
+    marginTop: 0, // Removed marginTop since content is centered
   },
   logoContainer: {
     width: IVOO_SPACING.logoWidth,
     height: IVOO_SPACING.logoHeight,
-    marginTop: 10,
+    marginTop: SCREEN_HEIGHT * 0.015, // ~12px responsive
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   illustrationContainer: {
     width: IVOO_SPACING.illustrationWidth,
     height: IVOO_SPACING.illustrationHeight,
-    marginTop: 100,
+    marginTop: SCREEN_HEIGHT * 0.09, // ~48px responsive - space between Creditivoo logo and Ivitoo illustration
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -122,10 +123,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   continueButton: {
-    marginTop: 50,
+    marginTop: SCREEN_HEIGHT * 0.025, // ~20px responsive (reduced from 50px)
   },
   registerLink: {
-    marginTop: 25,
+    marginTop: SCREEN_HEIGHT * 0.015, // ~12px responsive (reduced from 25px)
     paddingVertical: 8,
   },
   registerText: {
@@ -136,16 +137,7 @@ const styles = StyleSheet.create({
     color: IVOO_COLORS.primary,
     textAlign: 'center',
     includeFontPadding: false,
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: IVOO_SPACING.homeIndicatorBottom,
-    left: '50%',
-    marginLeft: IVOO_SPACING.homeIndicatorMargin,
-    width: IVOO_SPACING.homeIndicatorWidth,
-    height: IVOO_SPACING.homeIndicatorHeight,
-    backgroundColor: IVOO_COLORS.black,
-    borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
+    marginTop: SCREEN_HEIGHT * 0.015,
   },
 });
 

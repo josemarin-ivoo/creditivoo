@@ -2,17 +2,20 @@ import React, {useState, useMemo} from 'react';
 import {
   View,
   StyleSheet,
-  StatusBar,
   Text,
-  ScrollView,
   Image,
   TouchableOpacity,
+  Dimensions,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import {Button, Input} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {Button, Input} from '../../components';
+import RegisterLayout from '../../components/layouts/RegisterLayout';
+import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
 import Icon, {IconType} from 'react-native-dynamic-vector-icons';
+
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 interface PasswordRequirement {
   label: string;
@@ -66,237 +69,176 @@ const PasswordScreen: React.FC = () => {
     (navigation as any).navigate('RegistrationSuccess');
   };
 
-  return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          bounces={true}
-          overScrollMode="always"
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          keyboardShouldPersistTaps="handled">
-          {/* Creditivoo Logo */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../../images/creditivo-logo-full.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
+  const logo = (
+    <Image
+      source={require('../../images/creditivo-logo-full.png')}
+      style={styles.logo}
+      resizeMode="contain"
+    />
+  );
 
-          {/* Title */}
-          <Text style={styles.title}>Escribe tu contraseña</Text>
+  const content = (
+    <>
+      <Text style={styles.title}>Escribe tu contraseña</Text>
 
-          {/* Subtitle */}
-          <Text style={styles.subtitle}>
-            Tu contraseña es muy importante, no utilices secuencia numericas o
-            tu fecha de cumpleaños 🤓
-          </Text>
+      <Text style={styles.subtitle}>
+        Tu contraseña es muy importante, no utilices secuencia numericas o tu
+        fecha de cumpleaños 🤓
+      </Text>
 
-          {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <View style={styles.passwordInputWrapper}>
-              <Input
-                placeholder="••••••••"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                autoCapitalize="none"
-                autoCorrect={false}
-                containerStyle={styles.inputWrapper}
-                style={styles.passwordInput}
-              />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)}
-                activeOpacity={0.7}>
-                <Icon
-                  name={showPassword ? 'eye-off' : 'eye'}
-                  type={IconType.Feather}
-                  size={20}
-                  color="#676464"
-                  style={styles.eyeIconStyle}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Password Requirements */}
-          <View style={styles.requirementsContainer}>
-            {requirements.map((req, index) => (
-              <View key={index} style={styles.requirementRow}>
-                <View
-                  style={[
-                    styles.requirementCheckbox,
-                    {
-                      backgroundColor: req.isValid
-                        ? IVOO_COLORS.primary
-                        : '#DADADA',
-                      borderColor: req.isValid
-                        ? IVOO_COLORS.primary
-                        : '#DADADA',
-                    },
-                  ]}>
-                  {req.isValid && (
-                    <Icon
-                      name="check"
-                      type={IconType.MaterialCommunityIcons}
-                      size={10}
-                      color={IVOO_COLORS.white}
-                    />
-                  )}
-                </View>
-                <Text style={styles.requirementText}>{req.label}</Text>
-              </View>
-            ))}
-          </View>
-        </ScrollView>
-
-        {/* Continue Button - Fixed at bottom */}
-        <View style={styles.buttonContainer} pointerEvents="box-none">
-          <Button
-            onPress={handleContinue}
-            title="Continuar"
-            style={styles.continueButton}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.formArea}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+        <View style={styles.passwordInputWrapper}>
+          <Input
+            placeholder="••••••••"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+            containerStyle={styles.inputWrapper}
+            style={styles.passwordInput}
           />
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+            activeOpacity={0.7}>
+            <Icon
+              name={showPassword ? 'eye-off' : 'eye'}
+              type={IconType.Feather}
+              size={SCREEN_WIDTH * 0.053}
+              color="#676464"
+            />
+          </TouchableOpacity>
         </View>
 
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
-      </View>
-    </SafeAreaView>
+        <View style={styles.requirementsContainer}>
+          {requirements.map((req, index) => (
+            <View key={index} style={styles.requirementRow}>
+              <View
+                style={[
+                  styles.requirementCheckbox,
+                  {
+                    backgroundColor: req.isValid
+                      ? IVOO_COLORS.primary
+                      : '#DADADA',
+                    borderColor: req.isValid ? IVOO_COLORS.primary : '#DADADA',
+                  },
+                ]}>
+                {req.isValid && (
+                  <Icon
+                    name="check"
+                    type={IconType.MaterialCommunityIcons}
+                    size={SCREEN_WIDTH * 0.027}
+                    color={IVOO_COLORS.white}
+                  />
+                )}
+              </View>
+              <Text style={styles.requirementText}>{req.label}</Text>
+            </View>
+          ))}
+        </View>
+      </KeyboardAvoidingView>
+    </>
+  );
+
+  const bottomAction = (
+    <Button
+      onPress={handleContinue}
+      title="Continuar"
+      style={styles.continueButton}
+    />
+  );
+
+  return (
+    <>
+      <RegisterLayout
+        contentPaddingTop={SCREEN_HEIGHT * 0.09}
+        logo={logo}
+        bottomAction={bottomAction}>
+        {content}
+      </RegisterLayout>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: IVOO_COLORS.white,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingBottom: 100, // Space for fixed button
-  },
-  logoContainer: {
-    width: 272,
-    height: 42,
-    marginTop: 83,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: SCREEN_WIDTH * 0.72,
+    height: SCREEN_WIDTH * 0.72 * 0.154,
   },
   title: {
-    fontSize: 24,
+    fontSize: SCREEN_WIDTH * 0.063,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interBold,
     fontWeight: IVOO_TYPOGRAPHY.fontWeight.bold,
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
     color: IVOO_COLORS.black,
     textAlign: 'center',
-    marginTop: 68,
-    width: 307,
+    marginBottom: SCREEN_HEIGHT * 0.01,
+    width: SCREEN_WIDTH * 0.92,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: SCREEN_WIDTH * 0.04,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
     fontWeight: '300',
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
     color: '#676464',
     textAlign: 'center',
-    marginTop: 40,
-    width: 296,
+    marginBottom: SCREEN_HEIGHT * 0.06,
+    width: SCREEN_WIDTH * 0.85,
   },
-  inputContainer: {
-    marginTop: 51,
+  formArea: {
+    width: SCREEN_WIDTH * 0.75, // Same width as RegisterScreen
     alignItems: 'center',
+    flexShrink: 1,
   },
   passwordInputWrapper: {
     position: 'relative',
-    width: 302,
+    width: '100%',
   },
   inputWrapper: {
-    marginTop: 0,
+    width: '100%',
   },
   passwordInput: {
-    fontSize: 20, // Larger font size for password dots
+    fontSize: SCREEN_WIDTH * 0.05342343,
   },
   eyeIcon: {
     position: 'absolute',
-    right: 16,
-    top: 16,
+    right: SCREEN_WIDTH * 0.042,
+    top: SCREEN_HEIGHT * 0.02,
     zIndex: 1,
   },
-  eyeIconStyle: {
-    // Additional styling if needed
-  },
+
   requirementsContainer: {
-    marginTop: 28,
-    width: 302, // Match input width (same as input container)
+    marginTop: SCREEN_HEIGHT * 0.03,
+    width: '100%',
     alignItems: 'flex-start',
+    flexShrink: 1,
   },
   requirementRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 1, // Reduced vertical spacing
+    marginBottom: SCREEN_HEIGHT * 0.004,
   },
   requirementCheckbox: {
-    width: 13,
-    height: 13,
-    borderRadius: 3,
+    width: SCREEN_WIDTH * 0.037,
+    height: SCREEN_WIDTH * 0.037,
+    borderRadius: SCREEN_WIDTH * 0.008,
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 9,
+    marginRight: SCREEN_WIDTH * 0.024,
   },
   requirementText: {
-    fontSize: 12,
+    fontSize: SCREEN_WIDTH * 0.037,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
     fontWeight: '300',
-    lineHeight: 21.657,
-    letterSpacing: 0.0591,
-    color: '#676464', // Match design color
+    lineHeight: SCREEN_HEIGHT * 0.028,
+    letterSpacing: SCREEN_WIDTH * 0.0016,
+    color: '#676464',
     flex: 1,
   },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingBottom: 34, // Space for home indicator
-    paddingHorizontal: 30,
-    alignItems: 'center',
-    backgroundColor: IVOO_COLORS.white,
-    zIndex: 10, // Ensure button is above ScrollView
-  },
-  continueButton: {
-    marginTop: 0,
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: IVOO_SPACING.homeIndicatorBottom,
-    left: '50%',
-    marginLeft: IVOO_SPACING.homeIndicatorMargin,
-    width: IVOO_SPACING.homeIndicatorWidth,
-    height: IVOO_SPACING.homeIndicatorHeight,
-    backgroundColor: IVOO_COLORS.black,
-    borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
-  },
+  continueButton: {},
 });
 
 export default PasswordScreen;

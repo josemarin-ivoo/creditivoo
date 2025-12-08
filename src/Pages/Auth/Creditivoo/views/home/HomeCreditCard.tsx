@@ -1,18 +1,35 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image, Dimensions} from 'react-native';
-import {Button} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  IVOO_COLORS,
+  IVOO_TYPOGRAPHY,
+  IVOO_SPACING,
+  IVOO_TEXT_STYLES,
+  getShadowStyle,
+} from '../../styles';
+import AtomIcon from '../../svgs/svg-icons/atom.svg';
 
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 interface HomeCreditCardProps {
   onRequestCredit: () => void;
+  style?: any;
 }
 
-const HomeCreditCard: React.FC<HomeCreditCardProps> = ({onRequestCredit}) => {
+const HomeCreditCard: React.FC<HomeCreditCardProps> = ({
+  onRequestCredit,
+  style,
+}) => {
   return (
-    <View style={styles.mainCard}>
-      {/* Logo at the top */}
+    <View style={[styles.mainCard, style]}>
+      {/* Logo */}
       <View style={styles.logoContainer}>
         <Image
           source={require('../../images/creditivo-logo-full.png')}
@@ -21,17 +38,13 @@ const HomeCreditCard: React.FC<HomeCreditCardProps> = ({onRequestCredit}) => {
         />
       </View>
 
-      {/* Row with Text and Ivitoo */}
+      {/* Text + Ivitoo */}
       <View style={styles.mainCardTopRow}>
-        {/* Text Content - Left Side */}
         <View style={styles.mainCardTextContainer}>
-          <Text style={styles.mainCardTitle}>
-            Solicita aquí tu línea de{' '}
-            <Text style={styles.mainCardTitleBold}>CreditIvoo disponible</Text>
-          </Text>
+          <Text style={styles.mainCardTitle}>Solicita aquí tu línea de</Text>
+          <Text style={styles.mainCardTitleBold}>CreditIvoo disponible</Text>
         </View>
 
-        {/* Ivitoo Illustration - Inside mainCard, contained */}
         <View style={styles.ivitooInCard}>
           <Image
             source={require('../../images/home/ivitoo-home-no-credit.png')}
@@ -41,98 +54,122 @@ const HomeCreditCard: React.FC<HomeCreditCardProps> = ({onRequestCredit}) => {
         </View>
       </View>
 
-      {/* Separator */}
       <View style={styles.separator} />
 
-      {/* Button - Below the row */}
       <View style={styles.mainCardButtonContainer}>
-        <Button
+        <TouchableOpacity
           onPress={onRequestCredit}
-          title="Solicitar ahora"
-          style={styles.requestButton}
-          width={SCREEN_WIDTH * 0.7} // Responsive width (70% of screen)
-          height={33}
-        />
+          style={styles.customButton}
+          activeOpacity={0.8}>
+          <View style={styles.iconContainer}>
+            <AtomIcon width={18} height={18} />
+          </View>
+          <Text style={styles.buttonText}>Solicitar ahora</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  /* Card container */
   mainCard: {
-    position: 'absolute',
-    top: 60, // Position with ~20% above header (header starts at ~40px, so 60px gives ~20% overlap)
-    left: SCREEN_WIDTH * 0.06, // ~24px on standard screens, responsive
-    right: SCREEN_WIDTH * 0.06,
     backgroundColor: IVOO_COLORS.white,
-    borderRadius: 20,
-    paddingLeft: SCREEN_WIDTH * 0.1, // ~40px on standard screens, responsive
-    paddingRight: SCREEN_WIDTH * 0.1,
-    paddingTop: 20,
-    paddingBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
+    borderRadius: SCREEN_WIDTH * 0.03,
+    paddingHorizontal: SCREEN_WIDTH * 0.04, // reduced for more text space
+    paddingTop: SCREEN_HEIGHT * 0.018,
+    paddingBottom: SCREEN_HEIGHT * 0.024,
+    shadowColor: '#00000040',
+    shadowOffset: {width: 0, height: 3},
+    shadowOpacity: 0.18,
     shadowRadius: 8,
-    elevation: 4,
-    zIndex: 10,
-    overflow: 'hidden', // Keep Ivitoo contained within card
+    elevation: 6,
   },
+
+  /* Logo */
   logoContainer: {
-    width: SCREEN_WIDTH * 0.36, // Responsive logo width
-    height: SCREEN_WIDTH * 0.36 * 0.154, // Maintain aspect ratio (21/136)
-    marginBottom: 16,
+    width: SCREEN_WIDTH * 0.39,
+    height: SCREEN_WIDTH * 0.39 * 0.16,
     alignSelf: 'center',
+    marginBottom: SCREEN_HEIGHT * 0.012,
   },
-  logo: {
-    width: '100%',
-    height: '100%',
-  },
+  logo: {width: '100%', height: '100%'},
+
+  /* Content row */
   mainCardTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 0,
-    position: 'relative',
-  },
-  separator: {
-    height: 1.5,
-    backgroundColor: '#E5E5E5', // Light gray separator
-    marginBottom: 16,
     width: '100%',
   },
+
+  /* Text block */
   mainCardTextContainer: {
     flex: 1,
-    maxWidth: SCREEN_WIDTH * 0.45, // Responsive max width (~45% of screen)
-    marginRight: 8,
+    maxWidth: SCREEN_WIDTH * 0.55, // increased to avoid ellipsis
+    justifyContent: 'center',
   },
   mainCardTitle: {
-    fontSize: 16,
+    fontSize: SCREEN_WIDTH * 0.045,
+    lineHeight: SCREEN_WIDTH * 0.08,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
-    fontWeight: IVOO_TYPOGRAPHY.fontWeight.regular,
-    lineHeight: 23,
     color: IVOO_COLORS.black,
   },
   mainCardTitleBold: {
+    fontSize: SCREEN_WIDTH * 0.045,
+    lineHeight: SCREEN_WIDTH * 0.052,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interBold,
     fontWeight: IVOO_TYPOGRAPHY.fontWeight.bold,
+    color: IVOO_COLORS.black,
+    marginTop: 0, // removed spacing between lines
   },
+
+  /* Ivitoo */
   ivitooInCard: {
-    width: SCREEN_WIDTH * 0.18, // Responsive width (~68px on standard screens)
-    height: SCREEN_WIDTH * 0.18 * 1.118, // Maintain aspect ratio (76/68)
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_WIDTH * 0.22 * 1.15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: SCREEN_WIDTH * 0.02,
+  },
+  ivitooInCardImage: {width: '100%', height: '100%'},
+
+  separator: {
+    height: 1.5,
+    backgroundColor: '#DADADA',
+    width: '100%',
+    marginBottom: SCREEN_HEIGHT * 0.016,
+    marginTop: SCREEN_HEIGHT * -0.01,
+  },
+
+  /* Button */
+  mainCardButtonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: SCREEN_HEIGHT * 0.01,
+  },
+  customButton: {
+    backgroundColor: IVOO_COLORS.primary,
+    borderRadius: IVOO_SPACING.buttonBorderRadius,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    width: '100%',
+    height: 42,
+    flexDirection: 'row',
+    ...getShadowStyle('button'),
+  },
+  iconContainer: {
+    marginRight: SCREEN_WIDTH * 0.024,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  ivitooInCardImage: {
-    width: '100%',
-    height: '100%',
-  },
-  mainCardButtonContainer: {
-    width: '100%',
-    alignItems: 'flex-start',
-  },
-  requestButton: {
-    marginTop: 0,
+  buttonText: {
+    fontSize: IVOO_TEXT_STYLES.buttonText.fontSize,
+    fontFamily: IVOO_TEXT_STYLES.buttonText.fontFamily,
+    fontWeight: IVOO_TEXT_STYLES.buttonText.fontWeight,
+    letterSpacing: IVOO_TEXT_STYLES.buttonText.letterSpacing,
+    color: IVOO_COLORS.textWhite,
+    includeFontPadding: false,
   },
 });
 

@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {RootState} from 'store/store';
 import {SCREENS} from '@shared-constants';
-import CreditIvooLogo from '@ivoo/svgs/CreditIvooLogo';
+import CreditIvooLogo from '../../svgs/CreditIvooLogo';
 
 const SplashScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -42,9 +42,6 @@ const SplashScreen: React.FC = () => {
         <View style={styles.logoContainer}>
           <CreditIvooLogo width={171} height={109} />
         </View>
-
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -70,16 +67,6 @@ const styles = StyleSheet.create({
     height: 109,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  homeIndicator: {
-    position: 'absolute',
-    bottom: 8,
-    left: '50%',
-    marginLeft: -67,
-    width: 134,
-    height: 5,
-    backgroundColor: '#000000',
-    borderRadius: 100,
   },
 });
 

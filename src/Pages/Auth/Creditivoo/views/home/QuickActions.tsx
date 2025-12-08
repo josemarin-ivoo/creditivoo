@@ -3,19 +3,16 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
   Dimensions,
+  Platform,
+  Pressable,
+  Animated,
 } from 'react-native';
-import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
 
-// Import SVG components - react-native-svg-transformer handles these
-// @ts-ignore - SVG transformer handles these imports at runtime
 import PaymentsOneIcon from '../../svgs/menus/payments-one.svg';
-// @ts-ignore
 import ExtractIcon from '../../svgs/menus/extract.svg';
-// @ts-ignore
 import GemIcon from '../../svgs/menus/gem.svg';
-// @ts-ignore
 import PaymentsTwoIcon from '../../svgs/menus/payments-two.svg';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
@@ -26,45 +23,52 @@ interface QuickActionsProps {
 
 const QuickActions: React.FC<QuickActionsProps> = ({onActionPress}) => {
   const actions = [
-    {
-      id: 'cuotas',
-      label: 'Cuotas',
-      Icon: PaymentsOneIcon,
-    },
-    {
-      id: 'movimientos',
-      label: 'Movimientos',
-      Icon: ExtractIcon,
-    },
-    {
-      id: 'puntos',
-      label: 'Puntos',
-      Icon: GemIcon,
-    },
-    {
-      id: 'compras',
-      label: 'Compras',
-      Icon: PaymentsTwoIcon,
-    },
+    {id: 'cuotas', label: 'Cuotas', Icon: PaymentsOneIcon},
+    {id: 'movimientos', label: 'Movimientos', Icon: ExtractIcon},
+    {id: 'puntos', label: 'Puntos', Icon: GemIcon},
+    {id: 'compras', label: 'Compras', Icon: PaymentsTwoIcon},
   ];
 
   return (
-    <View style={styles.quickActions}>
+    <View style={styles.container}>
       {actions.map(action => {
+        const scale = new Animated.Value(1);
         const IconComponent = action.Icon;
+
+        const onPressIn = () => {
+          Animated.spring(scale, {
+            toValue: 0.92,
+            useNativeDriver: true,
+          }).start();
+        };
+
+        const onPressOut = () => {
+          Animated.spring(scale, {
+            toValue: 1,
+            friction: 3,
+            tension: 80,
+            useNativeDriver: true,
+          }).start();
+        };
+
         return (
-          <TouchableOpacity
+          <Pressable
             key={action.id}
-            style={styles.quickActionItem}
-            onPress={() => onActionPress(action.id)}>
-            <View style={styles.quickActionIcon}>
+            onPress={() => onActionPress(action.id)}
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            style={styles.item}>
+            <Animated.View style={[styles.iconWrapper, {transform: [{scale}]}]}>
               <IconComponent
-                width={SCREEN_WIDTH * 0.064} // ~24px responsive
-                height={SCREEN_WIDTH * 0.064} // Maintain aspect ratio
+                width={SCREEN_WIDTH * 0.085}
+                height={SCREEN_WIDTH * 0.085}
               />
-            </View>
-            <Text style={styles.quickActionLabel}>{action.label}</Text>
-          </TouchableOpacity>
+            </Animated.View>
+
+            <Text numberOfLines={1} style={styles.label}>
+              {action.label}
+            </Text>
+          </Pressable>
         );
       })}
     </View>
@@ -72,34 +76,47 @@ const QuickActions: React.FC<QuickActionsProps> = ({onActionPress}) => {
 };
 
 const styles = StyleSheet.create({
-  quickActions: {
+  container: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: SCREEN_WIDTH * 0.06, // ~24px responsive
-    marginBottom: SCREEN_HEIGHT * 0.037, // ~30px responsive
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.88,
+    alignSelf: 'center',
+    paddingTop: SCREEN_HEIGHT * 0.01,
+    paddingBottom: SCREEN_HEIGHT * 0.03,
   },
-  quickActionItem: {
+
+  item: {
+    width: SCREEN_WIDTH * 0.18,
     alignItems: 'center',
   },
-  quickActionIcon: {
-    width: SCREEN_WIDTH * 0.14, // ~53px responsive
-    height: SCREEN_WIDTH * 0.14, // Maintain square aspect ratio
-    borderRadius: SCREEN_WIDTH * 0.032, // ~12px responsive
+
+  iconWrapper: {
+    width: SCREEN_WIDTH * 0.15,
+    height: SCREEN_WIDTH * 0.15,
+    borderRadius: SCREEN_WIDTH * 0.02,
     backgroundColor: IVOO_COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: SCREEN_WIDTH * 0.021, // ~8px responsive
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: SCREEN_HEIGHT * 0.01,
+
+    ...Platform.select({
+      ios: {
+        shadowColor: '#00000025',
+        shadowOffset: {width: 0, height: 8},
+        shadowOpacity: 0.18,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
-  quickActionLabel: {
-    fontSize: SCREEN_WIDTH * 0.032, // ~12px responsive
+
+  label: {
+    fontSize: SCREEN_WIDTH * 0.033,
     fontFamily: IVOO_TYPOGRAPHY.fonts.interRegular,
-    fontWeight: IVOO_TYPOGRAPHY.fontWeight.regular,
-    color: IVOO_COLORS.black,
+    fontWeight: IVOO_TYPOGRAPHY.fontWeight.medium,
+    color: '#4A4A4A',
     textAlign: 'center',
   },
 });

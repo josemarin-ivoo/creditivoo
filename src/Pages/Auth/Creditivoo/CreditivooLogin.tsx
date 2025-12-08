@@ -21,18 +21,16 @@ import {Button} from '@creditivo-components';
 import {IVOO_COLORS, IVOO_SPACING, IVOO_TEXT_STYLES} from '@creditivo-style';
 
 
-export default function CreditivooLogin() { 
-
-  
+const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const handleContinue = () => {
     // Navigate to Home
-    (navigation as any).navigate(SCREENS.HOME);
+    (navigation as any).navigate("Home");
   };
 
   const handleRegister = () => {
-    (navigation as any).navigate(SCREENS.REGISTER);
+    (navigation as any).navigate("Register");
   };
 
   return (
@@ -83,11 +81,7 @@ export default function CreditivooLogin() {
       </ScrollView>
     </SafeAreaView>
   );
-
- 
-}
-
-
+};
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -161,3 +155,5 @@ const styles = StyleSheet.create({
     borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
   },
 });
+
+export default LoginScreen;

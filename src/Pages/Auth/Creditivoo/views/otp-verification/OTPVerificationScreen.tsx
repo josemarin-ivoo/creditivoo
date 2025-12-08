@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@creditivo-style';
 
 interface RouteParams {
   phoneNumber?: string;

@@ -6,7 +6,7 @@ import {
   TextInputProps,
   ViewStyle,
 } from 'react-native';
-import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '@creditivo-style';
+import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../styles';
 
 interface InputProps extends TextInputProps {
   containerStyle?: ViewStyle;

@@ -2,7 +2,7 @@
 export const SCREENS = {
   ONBOARDING: 'Onboarding',
   LOGIN: 'CreditivooLogin',
-  REGISTER: 'CreditivooRegister',
+  REGISTER: 'Register',
   HOME: 'Home',
   OTP_VERIFICATION: 'OTPVerification',
   SUCCESSFUL_REGISTRATION: 'Successful Registration',

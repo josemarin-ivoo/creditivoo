@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import {Button, Input, Checkbox} from '@ivoo/components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@ivoo/styles';
+import {Button, Input, Checkbox} from '@creditivo-components';
+import {IVOO_COLORS, IVOO_SPACING, IVOO_TYPOGRAPHY} from '@creditivo-style';
 import {SCREENS} from '@shared-constants';
 
 const RegisterScreen: React.FC = () => {
