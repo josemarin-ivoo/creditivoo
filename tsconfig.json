@@ -4,6 +4,7 @@
     "allowJs": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "strict": false,
     "resolveJsonModule": true,
@@ -34,7 +35,8 @@
       "@components/*": ["Pages/Auth/Creditivoo/app/components/*"],
       "@app-services/*": ["./app/services/*"],
       "@creditivo-style": ["Pages/Auth/Creditivoo/styles", "Pages/Auth/Creditivoo/styles/*"],
+      
     },
   },
-  "include": ["App.tsx", "src"]
+  "include": ["App.tsx", "src", "svg.d.ts"]
 }

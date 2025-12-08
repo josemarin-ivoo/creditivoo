@@ -33,6 +33,15 @@ import {ChangeMobile} from './src/Pages/unAuth/ChangeMobile';
 import ProductList from './src/Pages/Auth/Product/ProductList';
 
 import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin';
+
+import CreditivooRegister from './src/Pages/Auth/Creditivoo/CreditivooRegister';
+import OTPVerificationScreen from './src/Pages/Auth/Creditivoo/views/signup/OTPVerificationScreen';
+import EmailInputScreen from './src/Pages/Auth/Creditivoo/views/signup/EmailInputScreen';
+import EmailOTPVerificationScreen from './src/Pages/Auth/Creditivoo/views/signup/EmailOTPVerificationScreen';
+import PasswordScreen from './src/Pages/Auth/Creditivoo/views/signup/PasswordScreen';
+import RegistrationSuccessScreen from './src/Pages/Auth/Creditivoo/views/signup/RegistrationSuccessScreen';
+import HomeCreditIvoo from './src/Pages/Auth/Creditivoo/views/home/HomeCreditIvoo';
+
 // import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin'; // revisar a donde va a abrir 
 
 import CardDetails from './src/Pages/Auth/cardDetails';
@@ -230,8 +239,8 @@ const Route = () => {
                   <Image
                     source={
                       appTheme.type == 'green'
-                        ? imageResource.ic_search_white
-                        : imageResource.ic_search_green
+                        ? imageResource.ic_creditivodark
+                        : imageResource.ic_creditivo
                     }
                     size={size}
                     resizeMode="stretch"
@@ -242,8 +251,8 @@ const Route = () => {
                       appTheme.type == 'light'
                         ? imageResource.ic_search
                         : appTheme.type == 'dark'
-                        ? imageResource.ic_search_dark
-                        : imageResource.ic_search_green
+                        ? imageResource.ic_creditivodark
+                        : imageResource.ic_creditivo
                     }
                     size={size}
                     resizeMode="stretch"
@@ -486,12 +495,49 @@ const Route = () => {
          component={CreditivooLogin}
          options={{headerShown: false}}
        />
-      {/* ¡CORRECCIÓN CLAVE: AÑADIR GUESTLOGIN! */}
        <Stack.Screen
-       name={Routes.GUESTLOGIN}
-       component={GuestLogin}
-       options={{headerShown: false}}
-      />
+          name={Routes.NAVIGATION_REGISTER}
+          component={CreditivooRegister}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_OTP_VERIFICATION}
+          component={OTPVerificationScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_EMAIL_INPUT}
+          component={EmailInputScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_EMAIL_OTP_VERIFICATION}
+          component={EmailOTPVerificationScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_PASSWORD}
+          component={PasswordScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_REGISTRATION_SUCCESS}
+          component={RegistrationSuccessScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeCreditIvoo}
+          options={{headerShown: false}}
+        />
+        
+        {/* ¡CORRECCIÓN CLAVE: AÑADIR GUESTLOGIN! */}
+        <Stack.Screen
+        name={Routes.GUESTLOGIN}
+        component={GuestLogin}
+        options={{headerShown: false}}
+        />
+      
       </Stack.Navigator>
     );
 
