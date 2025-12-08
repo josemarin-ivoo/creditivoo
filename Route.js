@@ -31,6 +31,10 @@ import {Image, View} from 'react-native';
 import {NewPassword} from './src/Pages/unAuth/NewPassword';
 import {ChangeMobile} from './src/Pages/unAuth/ChangeMobile';
 import ProductList from './src/Pages/Auth/Product/ProductList';
+
+import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin';
+// import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin'; // revisar a donde va a abrir 
+
 import CardDetails from './src/Pages/Auth/cardDetails';
 import ProductDetails from './src/Pages/Auth/Product/ProductDetails';
 import {CategoryList} from './src/Pages/Auth/Product/Category/CategoryList';
@@ -212,6 +216,51 @@ const Route = () => {
             })}
           />
 
+          {/* By JAMP 01/12/2025 */}
+
+            <Tab.Screen
+            name={Routes.CREDITIVOOSTACK}
+            component={CreditivooStack} 
+            options={({route}) => ({
+              tabBarVisible: getTabBarVisibility(route),
+              tabBarLabel: () => {
+                return null;
+              },
+              tabBarIcon: ({size, focused}) => (focused ? (
+                  <Image
+                    source={
+                      appTheme.type == 'green'
+                        ? imageResource.ic_search_white
+                        : imageResource.ic_search_green
+                    }
+                    size={size}
+                    resizeMode="stretch"
+                  />
+                ) : (
+                  <Image
+                    source={
+                      appTheme.type == 'light'
+                        ? imageResource.ic_search
+                        : appTheme.type == 'dark'
+                        ? imageResource.ic_search_dark
+                        : imageResource.ic_search_green
+                    }
+                    size={size}
+                    resizeMode="stretch"
+                  />
+                )
+              ) 
+              
+            })}
+            listeners={() => ({
+              tabPress: () => {
+                Helper.HandleVibration();
+              },
+            })}
+          />
+        
+        {/* end BY JAMP */}
+
           {/**"WishlistStack"*/}
           <Tab.Screen
             name={Routes.WISHLISTSTACK}
@@ -275,6 +324,8 @@ const Route = () => {
       </Host>
     );
   }
+
+
   const HomeStack = () => {
     return (
       <Stack.Navigator
@@ -365,6 +416,8 @@ const Route = () => {
       </Stack.Navigator>
     );
   };
+
+
   const SearchStack = () => {
     return (
       <Stack.Navigator
@@ -412,6 +465,39 @@ const Route = () => {
       </Stack.Navigator>
     );
   };
+
+
+
+  const CreditivooStack = () => {
+
+    const token = useSelector(state => state.commonReducer.token);
+    return (
+
+      <Stack.Navigator
+        initialRouteName={token ? Routes.NAVIGATION_CREDITIVOO : Routes.GUESTLOGIN}
+      
+        screenOptions={{
+          headerStyle: {backgroundColor: ColorResource.Screamin_Green},
+          headerTintColor: ColorResource.white,
+          headerTitleStyle: {fontWeight: 'bold'},
+        }}>
+        <Stack.Screen
+         name={Routes.NAVIGATION_CREDITIVOO}
+         component={CreditivooLogin}
+         options={{headerShown: false}}
+       />
+      {/* ¡CORRECCIÓN CLAVE: AÑADIR GUESTLOGIN! */}
+       <Stack.Screen
+       name={Routes.GUESTLOGIN}
+       component={GuestLogin}
+       options={{headerShown: false}}
+      />
+      </Stack.Navigator>
+    );
+
+
+  }
+
   const CartStack = () => {
     const token = useSelector(state => state.commonReducer.token);
     return (
@@ -511,6 +597,9 @@ const Route = () => {
       </Stack.Navigator>
     );
   };
+  
+
+
   const WishlistStack = () => {
     const token = useSelector(state => state.commonReducer.token);
     return (
@@ -570,6 +659,15 @@ const Route = () => {
       </Stack.Navigator>
     );
   };
+
+// BY JAMP 02/12/2025
+
+
+
+
+// end BY JAMP 02/12/2025
+
+
   const ProfileStack = () => {
     const token = useSelector(state => state.commonReducer.token);
     return (

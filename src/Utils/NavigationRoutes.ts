@@ -6,6 +6,9 @@ export enum Routes {
   SEARCHSTACK = 'Search',
   HOMESTACK = 'HomeStack',
 
+  // BY JAMP
+  CREDITIVOOSTACK = 'CreditivooStack',
+
   //-------------------- Screen Name for navigation ------------------------------
 
   APPSCREENS = 'AppScreens',
@@ -61,6 +64,15 @@ export enum Routes {
   SPLASH = 'Splash',
   WISHTLIST = 'WishtList',
   NAVIGATION_TO_CART = 'Cart',
+
+  
+  //BY JAMP 02-12-2025
+
+  NAVIGATION_CREDITIVOO = 'CreditivooLogin',
+
+  //END BY JAMP 02-12-2025
+
+
   CARTPRODUCTLIST = 'CartProductList',
   CATEGORYLIST = 'CategoryList',
   NAVIGATION_TO_PRODUCTLIST = 'ProductList',
