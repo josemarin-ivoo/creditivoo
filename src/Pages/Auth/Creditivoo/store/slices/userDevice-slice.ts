@@ -3,7 +3,7 @@ import {
   createUserDevice,
   UserDeviceData,
   UserDeviceResponse,
-} from "@services/api/userDevice";
+} from "../../services/api/userDevice";
 
 interface UserDeviceState {
   isLoading: boolean;
@@ -53,7 +53,8 @@ const userDeviceSlice = createSlice({
       .addCase(submitUserDevice.rejected, (state, action) => {
         state.isLoading = false;
         if (action.payload) {
-          state.error = action.payload.message;
+          // state.error = action.payload.message;
+          state.error = (action.payload as { message: string }).message;
         } else {
           state.error =
             action.error.message || "Failed to send unique device ID";

@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {fetchTenants, Tenant} from '@services/api/tenants';
+import {fetchTenants, Tenant} from '../../services/api/tenants';
 
 interface TenantsState {
   tenants: Tenant[];

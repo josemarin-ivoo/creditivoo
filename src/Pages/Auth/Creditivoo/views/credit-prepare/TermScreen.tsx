@@ -8,7 +8,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Button} from '../../components';
 import RegisterLayout from '../../components/layouts/RegisterLayout';
 import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
@@ -17,12 +17,21 @@ const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const TermScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Verificar si viene del ProfileScreen
+  const fromProfile = (route.params as any)?.fromProfile || false;
+
   const handleSignContract = () => {
-    // Navegar a la pantalla de datos personales
-    (navigation as any).navigate('PersonalInfoForm');
+    if (fromProfile) {
+      // Si viene del ProfileScreen, volver atrás
+      navigation.goBack();
+    } else {
+      // Navegar a la pantalla de datos personales
+      (navigation as any).navigate('PersonalInfoForm');
+    }
   };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -95,10 +104,10 @@ const TermScreen: React.FC = () => {
   const bottomAction = (
     <Button
       onPress={handleSignContract}
-      title="Firmar contrato"
-      disabled={!hasScrolledToBottom}
+      title={fromProfile ? 'Listo' : 'Acepto'}
+      disabled={fromProfile ? false : !hasScrolledToBottom}
       style={{
-        opacity: hasScrolledToBottom ? 1 : 0.4,
+        opacity: fromProfile ? 1 : hasScrolledToBottom ? 1 : 0.4,
       }}
     />
   );

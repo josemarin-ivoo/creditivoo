@@ -21,8 +21,10 @@ const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const handleContinue = () => {
-    // Navigate to Home
-    (navigation as any).navigate(SCREENS.HOME);
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'MainTabs'}],
+    });
   };
 
   const handleRegister = () => {
@@ -39,10 +41,8 @@ const LoginScreen: React.FC = () => {
         overScrollMode="always"
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}>
-        {/* Welcome Text */}
         <Text style={styles.welcomeText}>Bienvenido a</Text>
 
-        {/* Creditivoo Logo */}
         <View style={styles.logoContainer}>
           <Image
             source={require('../../images/creditivo-logo-full.png')}
@@ -98,12 +98,12 @@ const styles = StyleSheet.create({
     lineHeight: IVOO_TEXT_STYLES.welcomeText.lineHeight,
     color: IVOO_COLORS.primary,
     textAlign: 'center',
-    marginTop: 0, // Removed marginTop since content is centered
+    marginTop: 0,
   },
   logoContainer: {
     width: IVOO_SPACING.logoWidth,
     height: IVOO_SPACING.logoHeight,
-    marginTop: SCREEN_HEIGHT * 0.015, // ~12px responsive
+    marginTop: SCREEN_HEIGHT * 0.015,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   illustrationContainer: {
     width: IVOO_SPACING.illustrationWidth,
     height: IVOO_SPACING.illustrationHeight,
-    marginTop: SCREEN_HEIGHT * 0.09, // ~48px responsive - space between Creditivoo logo and Ivitoo illustration
+    marginTop: SCREEN_HEIGHT * 0.09,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -123,10 +123,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   continueButton: {
-    marginTop: SCREEN_HEIGHT * 0.025, // ~20px responsive (reduced from 50px)
+    marginTop: SCREEN_HEIGHT * 0.025,
   },
   registerLink: {
-    marginTop: SCREEN_HEIGHT * 0.015, // ~12px responsive (reduced from 25px)
+    marginTop: SCREEN_HEIGHT * 0.015,
     paddingVertical: 8,
   },
   registerText: {

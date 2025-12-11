@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {fetchUserBalance, Balance} from '@services/api/balances';
+import {fetchUserBalance, Balance} from '../../services/api/balances';
 
 interface BalanceState {
   balance: Balance | null;

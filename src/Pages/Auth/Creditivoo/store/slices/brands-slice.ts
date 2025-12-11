@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Brand, fetchAllBrands } from "@services/api/brands";
+import { Brand, fetchAllBrands } from "../../services/api/brands";
 import { setGlobalLoader } from "./loader-slice";
 
 interface BrandState {

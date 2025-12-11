@@ -5,11 +5,13 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
+  Text,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import Icon, {IconType} from 'react-native-dynamic-vector-icons';
-import {IVOO_COLORS} from '../../styles';
+import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
+import {SCREENS} from '@shared-constants';
 import HomeCreditCard from './HomeCreditCard';
 import QuickActions from './QuickActions';
 
@@ -25,6 +27,23 @@ const HomeCreditIvoo: React.FC = () => {
   const handleQuickAction = (action: string) =>
     console.log('Quick Action', action);
 
+  const handleProfilePress = () => {
+    // Try to navigate to Profile tab first, if that doesn't work, use parent navigator
+    try {
+      (navigation as any).navigate(SCREENS.PROFILE);
+    } catch (error) {
+      // If navigation fails, try using parent navigator
+      const parent = (navigation as any).getParent();
+      if (parent) {
+        parent.navigate(SCREENS.PROFILE);
+      }
+    }
+  };
+
+  const handleNotificationPress = () => {
+    (navigation as any).navigate(SCREENS.NOTIFICATIONS);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar
@@ -32,8 +51,12 @@ const HomeCreditIvoo: React.FC = () => {
         barStyle="light-content"
       />
 
-      {/* HEADER */}
       <View style={styles.header}>
+        <TouchableOpacity
+          onPress={handleProfilePress}
+          style={styles.profileLink}>
+          <Text style={styles.profileLinkText}> </Text>
+        </TouchableOpacity>
         <View style={styles.headerIcons}>
           <TouchableOpacity style={styles.headerIcon}>
             <Icon
@@ -43,7 +66,9 @@ const HomeCreditIvoo: React.FC = () => {
               color="white"
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIcon}>
+          <TouchableOpacity
+            style={styles.headerIcon}
+            onPress={handleNotificationPress}>
             <Icon name="bell" type={IconType.Feather} size={20} color="white" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerIcon}>
@@ -57,38 +82,17 @@ const HomeCreditIvoo: React.FC = () => {
         </View>
       </View>
 
-      {/* FLOATING CREDIT CARD */}
       <HomeCreditCard
         style={styles.mainCard}
         onRequestCredit={handleRequestCredit}
       />
 
-      {/* CONTENT BELOW CARD */}
       <View style={styles.actionsWrapper}>
         <QuickActions onActionPress={handleQuickAction} />
       </View>
-
-      {/* BOTTOM TAB BAR */}
-      {/* <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabItemActive}>
-          <Icon name="grid" type={IconType.Feather} size={20} color="white" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tabItem} />
-
-        <TouchableOpacity style={styles.tabItem}>
-          <View style={styles.tabDots}>
-            <View style={styles.tabDot} />
-            <View style={styles.tabDot} />
-            <View style={styles.tabDot} />
-          </View>
-        </TouchableOpacity>
-      </View> */}
     </SafeAreaView>
   );
 };
-
-/* -------------------- STYLES -------------------- */
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -101,6 +105,17 @@ const styles = StyleSheet.create({
     paddingTop: SCREEN_HEIGHT * 0.011,
     paddingBottom: SCREEN_HEIGHT * 0.05, // Extra height to show the card overlap
     paddingHorizontal: SCREEN_WIDTH * 0.05,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  profileLink: {
+    padding: SCREEN_WIDTH * 0.01,
+  },
+  profileLinkText: {
+    fontSize: SCREEN_WIDTH * 0.04,
+    fontFamily: IVOO_TYPOGRAPHY.fonts.interSemiBold,
+    color: 'white',
   },
   headerIcons: {
     flexDirection: 'row',
@@ -124,6 +139,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: SCREEN_HEIGHT * 0.28,
     paddingHorizontal: SCREEN_WIDTH * 0.05,
+    paddingBottom: SCREEN_WIDTH * 0.18,
     alignItems: 'center',
   },
 

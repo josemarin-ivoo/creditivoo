@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, Image, Dimensions} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {Button} from '../../components';
 import RegisterLayout from '../../components/layouts/RegisterLayout';
 import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
@@ -7,9 +8,10 @@ import {IVOO_COLORS, IVOO_TYPOGRAPHY} from '../../styles';
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const CreditValidationScreen: React.FC = () => {
+  const navigation = useNavigation();
+
   const handleContinue = () => {
-    // TODO: Implementar lógica de continuación
-    console.log('Continuar desde validación');
+    (navigation as any).navigate('CreditConfirmation');
   };
 
   const logo = (

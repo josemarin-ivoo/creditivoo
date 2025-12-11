@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import DatePicker from 'react-native-date-picker';
 import {Button, Input} from '../../components';
 import RegisterLayout from '../../components/layouts/RegisterLayout';
@@ -19,6 +19,11 @@ const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const PersonalInfoFormScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  // Verificar si viene del ProfileScreen
+  const fromProfile = (route.params as any)?.fromProfile || false;
+
   const [formData, setFormData] = useState({
     nombres: 'Gabriela',
     apellidos: 'Perez',
@@ -43,8 +48,13 @@ const PersonalInfoFormScreen: React.FC = () => {
   };
 
   const handleConfirm = () => {
-    // Navegar a la pantalla de código de referidos
-    (navigation as any).navigate('ReferralCodeForm');
+    if (fromProfile) {
+      // Si viene del ProfileScreen, volver atrás
+      navigation.goBack();
+    } else {
+      // Navegar a la pantalla de código de referidos
+      (navigation as any).navigate('ReferralCodeForm');
+    }
   };
 
   const logo = (

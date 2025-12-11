@@ -12,7 +12,7 @@ export const IVOO_COLORS = {
   // Neutral Colors
   white: '#FFFFFF',
   black: '#000000',
-  textWhite: '#FFF2F2',
+  textWhite: '#FFFFFF',
 
   // Status Colors
   success: '#0ADD73',
@@ -33,7 +33,11 @@ export const IVOO_COLORS = {
   // Border Colors
   border: '#E5E5E5',
   borderLight: '#F0F0F0',
+
+  // Gray Colors
+  grayLight: '#ECECEC',
+  grayMedium: '#B3B3B3',
+  grayDark: '#333333',
 } as const;
 
-export type IvoColor = typeof IVOO_COLORS[keyof typeof IVOO_COLORS];
-
+export type IvoColor = (typeof IVOO_COLORS)[keyof typeof IVOO_COLORS];

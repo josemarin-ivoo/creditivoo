@@ -41,6 +41,21 @@ import EmailOTPVerificationScreen from './src/Pages/Auth/Creditivoo/views/signup
 import PasswordScreen from './src/Pages/Auth/Creditivoo/views/signup/PasswordScreen';
 import RegistrationSuccessScreen from './src/Pages/Auth/Creditivoo/views/signup/RegistrationSuccessScreen';
 import HomeCreditIvoo from './src/Pages/Auth/Creditivoo/views/home/HomeCreditIvoo';
+import IdentityVerificator from './src/Pages/Auth/Creditivoo/views/kyc/IdentityVerificator';
+import IdFrontRequest from './src/Pages/Auth/Creditivoo/views/kyc/IdFrontRequest';
+import IdBackRequest from './src/Pages/Auth/Creditivoo/views/kyc/IdBackRequest';
+import SelfieRequest from './src/Pages/Auth/Creditivoo/views/kyc/SelfieRequest';
+import TermScreen from './src/Pages/Auth/Creditivoo/views/credit-prepare/TermScreen';
+import PersonalInfoFormScreen from './src/Pages/Auth/Creditivoo/views/credit-prepare/PersonalInfoFormScreen';
+import ReferralCodeForm from './src/Pages/Auth/Creditivoo/views/credit-prepare/ReferralCodeForm';
+import CreditValidationScreen from './src/Pages/Auth/Creditivoo/views/credit-prepare/CreditValidationScreen';
+import CreditConfirmationScreen from './src/Pages/Auth/Creditivoo/views/credit-prepare/CreditConfirmationScreen';
+import HelpScreen from './src/Pages/Auth/Creditivoo/views/help/HelpScreen';
+import SettingScreen from './src/Pages/Auth/Creditivoo/views/settings/SettingScreen';
+import SecurityScreen from './src/Pages/Auth/Creditivoo/views/settings/SecurityScreen';
+import NotificationScreen from './src/Pages/Auth/Creditivoo/views/notifications/NotificationScreen';
+
+import MainTabsCreditivoo from './src/Pages/Auth/Creditivoo/navigation/TabsNavigation';
 
 // import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin'; // revisar a donde va a abrir 
 
@@ -232,6 +247,7 @@ const Route = () => {
             component={CreditivooStack} 
             options={({route}) => ({
               tabBarVisible: getTabBarVisibility(route),
+              
               tabBarLabel: () => {
                 return null;
               },
@@ -258,7 +274,8 @@ const Route = () => {
                     resizeMode="stretch"
                   />
                 )
-              ) 
+              ),
+               
               
             })}
             listeners={() => ({
@@ -479,11 +496,11 @@ const Route = () => {
 
   const CreditivooStack = () => {
 
-    const token = useSelector(state => state.commonReducer.token);
+    // const token = useSelector(state => state.commonReducer.token);
     return (
 
       <Stack.Navigator
-        initialRouteName={token ? Routes.NAVIGATION_CREDITIVOO : Routes.GUESTLOGIN}
+        initialRouteName={ Routes.NAVIGATION_CREDITIVOO }
       
         screenOptions={{
           headerStyle: {backgroundColor: ColorResource.Screamin_Green},
@@ -526,11 +543,88 @@ const Route = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
+          name={Routes.NAVIGATION_IDVERIFICATION}
+          component={IdentityVerificator}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="Home"
           component={HomeCreditIvoo}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          
+          name={Routes.NAVIGATION_TABCREDITIVOO}
+          component={MainTabsCreditivoo}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_IDFRONTREQUEST}
+          component={IdFrontRequest}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_IDBACKREQUEST}
+          component={IdBackRequest}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_SELFIEREQUEST}
+          component={SelfieRequest}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name={Routes.NAVIGATION_TERMS}
+          component={TermScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_PERSONALINFO}
+          component={PersonalInfoFormScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_REFERRALCODE}
+          component={ReferralCodeForm}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_CREDITVALIDATION}
+          component={CreditValidationScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name={Routes.NAVIGATION_CREDITCONFIRMATION}
+          component={CreditConfirmationScreen}
+          options={{headerShown: false}}
+        />
+
         
+
+
+        <Stack.Screen
+          name={Routes.NAVIGATION_HELP}
+          component={HelpScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_SETTINGS}
+          component={SettingScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_SECURITY}
+          component={SecurityScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name={Routes.NAVIGATION_NOTIFICATIONS}
+          component={NotificationScreen}
+          options={{headerShown: false}}
+        />
+
         {/* ¡CORRECCIÓN CLAVE: AÑADIR GUESTLOGIN! */}
         <Stack.Screen
         name={Routes.GUESTLOGIN}
@@ -877,6 +971,7 @@ const Route = () => {
         component={HomeTabs}
         options={{headerShown: false}}
       />
+      
       {/**"Home" */}
     </AppStack.Navigator>
   );
@@ -976,6 +1071,7 @@ const Route = () => {
         component={AppScreens}
         options={{headerShown: false}}
       />
+      
       {/**"AppScreens" */}
       <Stack.Screen
         name={Routes.AUTHSCREENS}
@@ -989,7 +1085,19 @@ const Route = () => {
         options={{headerShown: false}}
       />
     </RootStack.Navigator>
+    
   );
+  // const Tabcreditivoo = () =>(
+  //   <RootStack.Navigator>
+  //     <Stack.Screen
+          
+  //       name={Routes.NAVIGATION_TABCREDITIVOO}
+  //       component={MainTabsCreditivoo}
+  //       options={{headerShown: false}}
+  //     />
+  //   </RootStack.Navigator>
+
+  // );
   return (
     <NavigationContainer
       //linking={linking}
@@ -1018,6 +1126,7 @@ const Route = () => {
         routeNameRef.current = currentRouteName;
       }}>
       <RootScreens options={{animationEnabled: false}} />
+      {/* <Tabcreditivoo options={{animationEnabled: false}} /> */}
     </NavigationContainer>
   );
 };
