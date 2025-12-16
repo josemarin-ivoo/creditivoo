@@ -150,7 +150,7 @@ import DeepLinkReducer from "./reducers/deepLinkReducer";
 // IMPORTS DE CREDITIVOO (Reducers)
 // ===================================
 import loaderReducer from '../Pages/Auth/Creditivoo/store/slices/loader-slice';
-import authReducer from '../Pages/Auth/Creditivoo/store/slices/auth-slice';
+import authReducer from '../Pages/Auth/Creditivoo/store-creditivoo/slices/auth-slice';
 import brandsReducer from '../Pages/Auth/Creditivoo/store/slices/brands-slice';
 import modelsReducer from '../Pages/Auth/Creditivoo/store/slices/models-slice';
 import usersReducer from '../Pages/Auth/Creditivoo/store/slices/users-slice';
@@ -167,8 +167,8 @@ import registerReducer from '../Pages/Auth/Creditivoo/store-creditivoo/slices/re
 
 
 // ==========================================================
-// 1. DEFINICIÓN DEL ROOT REDUCER DE CREDITIVOO (¡MOVIDO ARRIBA!)
-//    (El bloque 'middleware' ha sido eliminado, ya que no pertenece aquí)
+// 1. DEFINICIÓN DEL ROOT REDUCER DE CREDITIVOO 
+
 // ==========================================================
 const creditivooRootReducer = combineReducers({
      // Nodos internos de Creditivoo
