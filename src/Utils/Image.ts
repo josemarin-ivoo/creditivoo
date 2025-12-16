@@ -41,10 +41,10 @@ export default {
   ic_search: require('../../assets/images/tab/ic_search.png'),
   ic_search_white: require('../../assets/images/tab/ic_search_white.png'),
   
-  // ic_creditivodark: require('../../assets/images/tab/creditivoodark-24px.png'),
+  ic_creditivodark: require('../../assets/images/tab/25px-white-stroke.png'),
   // ic_creditivodark_a: require('../../assets/images/tab/creditivoodark-48px.png'),
   // ic_creditivodark_b: require('../../assets/images/tab/creditivoodark-72px.png'),
-  // ic_creditivo: require('../../assets/images/tab/creditivoo-24px.png'),
+  ic_creditivo: require('../../assets/images/tab/creditivoo24px.png'),
   // ic_creditivo_b: require('../../assets/images/tab/creditivoo-48px.png'),
   // ic_creditivo_c: require('../../assets/images/tab/creditivoo-72px.png'),
 

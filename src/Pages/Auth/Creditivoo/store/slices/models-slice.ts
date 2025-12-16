@@ -5,7 +5,7 @@ import {
   fetchModelsByBrand,
   fetchPricesByModelId,
   Price,
-} from '../../services/api/models';
+} from '@services/api/models';
 
 interface ModelsState {
   models: DeviceModel[];

@@ -5,7 +5,7 @@ import {
   fetchBankAccountInfo,
   BankInfo,
   BankAccountInfo,
-} from "../../services/api/banks";
+} from "@services/api/banks";
 
 export const getBankOptions = createAsyncThunk(
   "banks/getBankOptions",

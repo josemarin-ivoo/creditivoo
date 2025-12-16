@@ -1,227 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-  ActivityIndicator,
-  Platform,
+import React, {useState} from 'react';
+import {
+  View,
+  StyleSheet,
   StatusBar,
+  Text,
+  TextInput,
+  TouchableOpacity,
   Image,
-  
+  ScrollView,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import {SCREENS} from '@shared-constants';
-import {Button} from '@creditivo-components';
-import {IVOO_COLORS, IVOO_SPACING, IVOO_TEXT_STYLES} from '@creditivo-style';
-
+import {Button, Input, AlertModal} from './components';
+import {
+  IVOO_COLORS,
+  IVOO_SPACING,
+  IVOO_TEXT_STYLES,
+  IVOO_TYPOGRAPHY,
+} from './styles';
+import {useIvoSelector, useIvoDispatch} from '../../../redux/useIvo';
+import {login} from './store-creditivoo/slices/auth-slice';
+import CustomBottomSheetModal from './shared/components/bottom-sheet/CustomBottomSheetModal';
+import Icon, {IconType} from 'react-native-dynamic-vector-icons';
+// import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {Routes} from '../../../Utils/NavigationRoutes';
 
-import * as Keychain from 'react-native-keychain';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const USER_SESSION_KEY = '@CreditivooUserSession';
-const BIOMETRIC_SERVICE = 'creditivoo_biometric_service';
-const LAST_EMAIL_KEY = '@CreditivooLastEmail';
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
-  // captura si o no de la biometria
-  const [showBiometricButton, setShowBiometricButton] = useState(false);
-  //guarda el correo
+  const dispatch = useIvoDispatch();
+  const {isLoggedIn, isLoading} = useIvoSelector(state => state.creditivoo.auth);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [email, setEmail] = useState('');
-  // check recuerdame
-  const [rememberMe, setRememberMe] = useState(false);
-
   const [password, setPassword] = useState('');
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [focusedInputs, setFocusedInputs] = useState<Set<string>>(new Set());
 
-
-  const navigateToHome = () => {
-    
-    
-    (navigation as any).navigate(Routes.NAVIGATION_TABCREDITIVOO);
-  };
-
-  //logica para cargar el correo persistente
-  const loadRememberMePreference = async () => {
-    try {
-        const lastEmail = await AsyncStorage.getItem(LAST_EMAIL_KEY);
-        if (lastEmail) {
-            setEmail(lastEmail);
-            setRememberMe(true); // Si hay email guardado, el switch estaba en ON
-        } else {
-            // Si no hay email guardado, intentamos cargar de la sesión activa
-            const sessionDataString = await AsyncStorage.getItem(USER_SESSION_KEY);
-            if (sessionDataString) {
-                const sessionData = JSON.parse(sessionDataString);
-                if (sessionData.username) {
-                    setEmail(sessionData.username);
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error al cargar la preferencia "Recuérdame":', error);
-    }
-  };
-
-  const saveRememberMePreference = async (currentEmail) => {
-      try {
-          if (rememberMe && currentEmail) {
-              await AsyncStorage.setItem(LAST_EMAIL_KEY, currentEmail);
-          } else {
-              // Si el usuario desactiva el check, limpiamos el email guardado
-              await AsyncStorage.removeItem(LAST_EMAIL_KEY);
-          }
-      } catch (error) {
-          console.error('Error al guardar la preferencia "Recuérdame":', error);
-      }
-  };
-
-  const setSessionAndSaveCredentials = async (username, sessionToken) => {
-    
-    await AsyncStorage.setItem(USER_SESSION_KEY, JSON.stringify({ token: sessionToken, username: username }));
-    
-    
-    await Keychain.setGenericPassword(username, sessionToken, {
-      service: BIOMETRIC_SERVICE,
-      accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
-    });
-    
-    console.log(`Sesión biométrica guardada. Token: ${sessionToken}`);
-    navigateToHome();
-  };
-
-
-  const loadAndAuthenticate = async () => {
-    try {
-      const credentials = await Keychain.getGenericPassword({
-        service: BIOMETRIC_SERVICE,
-        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
-
-        // Mensaje de solicitud (iOS/Android)
-        authenticationPrompt: {
-            title: 'Autenticación Biométrica Creditivoo',
-            subtitle: 'Usa tu biometría para un acceso rápido.',
-            cancel: 'Cancelar',
-        },
+  const handleContinue = () => {
+    // Si ya está autenticado, navegar directamente
+    if (isLoggedIn) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainTabs' as never}],
       });
-
-      if (credentials && credentials.username && credentials.password) {
-        const recoveredToken = credentials.password;
-        await AsyncStorage.setItem(USER_SESSION_KEY, JSON.stringify({ 
-            token: credentials.password, 
-            username: credentials.username 
-        }));
-        console.log('✅ RESPUESTA BIOMÉTRICA EXITOSA (Credenciales Recuperadas):', {
-          username: credentials.username,
-          
-          tokenSnippet: recoveredToken.substring(0, 10) + '...',
-        });
-
-        Alert.alert("Acceso Biomètrico", `Bienvenido de nuevo, ${credentials.username}.`);
-        navigateToHome();
-
-      } else {
-
-        console.log('No hay credenciales guardadas con biometría.');
-
-      }
-    } catch (error) {
-
-      // Maneja la cancelación del usuario o error biométrico
-      console.warn('Fallo al recuperar credenciales biométricas:', error.message);
-
-      Alert.alert(
-        "Acceso Manual", 
-        "La autenticación biométrica falló o fue cancelada. Por favor, inicia sesión con tu contraseña."
-      );
+      return;
     }
+
+    // Mostrar modal de login
+    // Usar setTimeout para asegurar que el estado se actualice correctamente
+    // y el BottomSheetModal pueda presentarse
+    console.log('[LoginScreen] Abriendo modal de login');
+    setShowLoginModal(true);
   };
-
-  const checkBiometricSupportAndCredentials = async () => {
-    try {
-      const supported = await Keychain.getSupportedBiometryType() as string; 
-    
-    const hasCredentials = await Keychain.hasGenericPassword({ service: BIOMETRIC_SERVICE });
-
-      // Solo mostramos el botón si hay soporte y ya hay credenciales guardadas para esta app
-      if (supported !== 'None' && hasCredentials) { 
-        setShowBiometricButton(true);
-      } else {
-        setShowBiometricButton(false);
-      }
-    } catch (e) {
-      console.error('Error al verificar soporte biométrico:', e);
-      setShowBiometricButton(false);
-    }
-  };
-
-  // para dejar el correo precargado
-  const loadLastUsedEmail = async () => {
-    try {
-      // Intentar cargar el último email usado (guardado como username)
-      const sessionDataString = await AsyncStorage.getItem(USER_SESSION_KEY);
-      if (sessionDataString) {
-      const sessionData = JSON.parse(sessionDataString);
-      if (sessionData.username) {
-        setEmail(sessionData.username);
-      }
-      }
-    } catch (error) {
-      console.error('Error al cargar el último email usado:', error);
-    }
-  };
-
-
-
-  useEffect(() => {
-    loadRememberMePreference();
-    loadLastUsedEmail();
-    checkBiometricSupportAndCredentials();
-  }, []);
-
-  const handleContinue = async () => {
-    if (!email || !email.includes('@')) {
-        Alert.alert("Error", "Por favor, introduce un correo electrónico válido.");
-        return;
-    }
-
-    // 1. Guardar la preferencia de 'Recuérdame'
-    await saveRememberMePreference(email); 
-
-    // 2. Muestra el campo de contraseña
-    setShowPasswordInput(true); 
-    
-    // Si la biometría está disponible, ocultamos el botón de huella temporalmente para simplificar la UI
-    // (Opcional, podrías dejarlo si quieres que el usuario pueda cambiar a biometría desde la clave)
-    // setShowBiometricButton(false); 
-};
-
 
   const handleLogin = async () => {
-    if (!password) {
-        Alert.alert("Error", "Por favor, introduce tu clave de acceso.");
-        return;
+    if (!email.trim() || !password.trim()) {
+      setAlertMessage('Por favor, completa todos los campos');
+      setAlertVisible(true);
+      return;
     }
-    
-    // Aquí iría la llamada a la API con (email, password)
-    // SIMULACIÓN: Asumiendo que el login es exitoso
-    const DUMMY_USERNAME = email;
-    const DUMMY_TOKEN = 'jwt_token_for_' + email + '_and_password'; 
-    
-    // Guarda las credenciales biométricas y la sesión, luego navega
-    setSessionAndSaveCredentials(DUMMY_USERNAME, DUMMY_TOKEN);
-};
+
+    try {
+      const result = await dispatch(
+        login({email: email.trim(), password}),
+      ).unwrap();
+
+      if (result.token && result.user) {
+        // Login exitoso, cerrar modal y navegar
+        setShowLoginModal(false);
+        setEmail('');
+        setPassword('');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'MainTabs' as never}],
+        });
+      }
+    } catch (err: any) {
+      const errorMessage =
+        err?.message || 'Error al iniciar sesión. Por favor, intenta de nuevo.';
+      setAlertMessage(errorMessage);
+      setAlertVisible(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowLoginModal(false);
+    setEmail('');
+    setPassword('');
+    setFocusedInputs(new Set());
+  };
 
   const handleRegister = () => {
-    (navigation as any).navigate("Register");
+    (navigation as any).navigate(Routes.NAVIGATION_REGISTER);
   };
 
   return (
@@ -234,10 +114,8 @@ const LoginScreen: React.FC = () => {
         overScrollMode="always"
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}>
-        {/* Welcome Text */}
         <Text style={styles.welcomeText}>Bienvenido a</Text>
 
-        {/* Creditivoo Logo */}
         <View style={styles.logoContainer}>
           <Image
             source={require('./images/creditivo-logo-full.png')}
@@ -254,147 +132,141 @@ const LoginScreen: React.FC = () => {
             resizeMode="contain"
           />
         </View>
-        {/* email */}
-        <TextInput
-           style={styles.input}
-           placeholder="Correo Electrónico"
-           placeholderTextColor={IVOO_COLORS.textSecondary}
-           keyboardType="email-address"
-           autoCapitalize="none"
-           value={email} // Precargado si existe una sesión anterior
-           onChangeText={setEmail}
-         />
-         {showPasswordInput && (
-             <TextInput
-                style={[styles.input, styles.passwordInput]}
-                placeholder="Clave de Acceso"
-                placeholderTextColor={IVOO_COLORS.textSecondary}
-                secureTextEntry={true}
-                value={password}
-                onChangeText={setPassword}
-             />
-        )}
-        <View style={styles.buttonRowContainer}>
-            
-            {/* Botón de Continuar / Iniciar Sesión (Cambia el título y la acción) */}
-            <Button
-                onPress={showPasswordInput ? handleLogin : handleContinue} // CAMBIA LA ACCIÓN
-                title={showPasswordInput ? "INICIAR SESIÓN" : "CONTINUAR"} // CAMBIA EL TÍTULO
-                style={styles.continueButton}
-            />
-            
-            {/* Botón de Huella Digital (Pequeño, solo ícono) */}
-            {showBiometricButton && !showPasswordInput && ( 
-                <TouchableOpacity
-                    onPress={loadAndAuthenticate} 
-                    style={styles.smallBiometricButton}>
-                    <Text style={styles.biometricIconTextSmall}>
-                        {/* Ícono de Apple para iOS (TouchID/FaceID) o Candado Cerrado para Android (Huella) */}
-                        {Platform.OS === 'ios' ? '' : '\u{1F512}'}
-                        {/* {Platform.OS === 'ios' ? '' : '\u2328'} */}
-                    </Text>
-                </TouchableOpacity>
-            )}
-        </View>
 
-          {/* {showBiometricButton && ( 
-            <TouchableOpacity
-              onPress={loadAndAuthenticate} 
-              style={styles.biometricButton}>
-              <Text style={styles.biometricIconText}>
-              {Platform.OS === 'ios' ? 'FaceID / TouchID' : 'Huella Digital'}
-              </Text>
-              <Text style={styles.biometricLabel}>
-                Acceso Rápido con Biometría
-            </Text>
-            </TouchableOpacity>
-          )}
-          
         {/* Continue Button */}
-        {/* <Button
+        <Button
           onPress={handleContinue}
           title="Continuar"
           style={styles.continueButton}
-        /> */}
+        />
 
         {/* Register Link */}
         <TouchableOpacity onPress={handleRegister} style={styles.registerLink}>
           <Text style={styles.registerText}>Registrarse</Text>
         </TouchableOpacity>
-
-        {/* Home Indicator */}
-        <View style={styles.homeIndicator} />
       </ScrollView>
+
+      {/* Login Bottom Sheet */}
+      <CustomBottomSheetModal
+        isVisible={showLoginModal}
+        onClose={handleCloseModal}
+        snapPoints={focusedInputs.size > 0 ? ['70%'] : ['45%']}
+        scrollEnabled={true}
+        accessibilityLabel="Login Bottom Sheet">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardAvoidingView}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
+          <View style={styles.bottomSheetContent}>
+            <View style={styles.bottomSheetHeader}>
+              <Text style={styles.bottomSheetTitle}>Iniciar Sesión</Text>
+              <TouchableOpacity
+                onPress={handleCloseModal}
+                style={styles.closeButtonContainer}>
+                <Text style={styles.bottomSheetCloseButton}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.bottomSheetBody}>
+              <Input
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+                containerStyle={styles.inputContainer}
+                editable={!isLoading}
+                onFocus={() => {
+                  if (!isLoading) {
+                    setFocusedInputs(prev => new Set(prev).add('email'));
+                  }
+                }}
+                onBlur={() => {
+                  setFocusedInputs(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete('email');
+                    return newSet;
+                  });
+                }}
+              />
+
+              <View style={styles.passwordInputWrapper}>
+                <Input
+                  placeholder="••••••••"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  containerStyle={styles.inputWrapper}
+                  style={styles.passwordInput}
+                  editable={!isLoading}
+                  onFocus={() => {
+                    if (!isLoading) {
+                      setFocusedInputs(prev => new Set(prev).add('password'));
+                    }
+                  }}
+                  onBlur={() => {
+                    setFocusedInputs(prev => {
+                      const newSet = new Set(prev);
+                      newSet.delete('password');
+                      return newSet;
+                    });
+                  }}
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => !isLoading && setShowPassword(!showPassword)}
+                  activeOpacity={0.7}
+                  disabled={isLoading}>
+                  <Icon
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    type={IconType.Feather}
+                    size={SCREEN_WIDTH * 0.053}
+                    color={isLoading ? '#DADADA' : '#676464'}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                {isLoading && (
+                  <ActivityIndicator
+                    size="small"
+                    color={IVOO_COLORS.white}
+                    style={styles.buttonLoader}
+                  />
+                )}
+                <Button
+                  title={isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                  onPress={handleLogin}
+                  disabled={isLoading || !email.trim() || !password.trim()}
+                  style={StyleSheet.flatten([
+                    styles.loginButton,
+                    isLoading && styles.loginButtonLoading,
+                  ])}
+                  width="100%"
+                />
+              </View>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </CustomBottomSheetModal>
+
+      {/* Alert Modal */}
+      <AlertModal
+        visible={alertVisible}
+        title="Error"
+        message={alertMessage}
+        type="error"
+        onClose={() => setAlertVisible(false)}
+        buttonText="OK"
+      />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-
-  buttonRowContainer: {
-    width: '85%',
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center',
-    marginTop: 50, 
-  },
-    
-  continueButton: {
-    
-    width: '75%', 
-    
-  },
-    
-  smallBiometricButton: {
-    width: '20%', 
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: IVOO_COLORS.primary,
-    marginLeft: 10,
-  },
-    
-  biometricIconTextSmall: {
-    fontSize: 30, 
-    color: IVOO_COLORS.primary,
-  },
-    
-  passwordInput: {
-    marginTop: 20, 
-  },
-  input: {
-    width: '85%',
-    height: 50,
-    borderColor: IVOO_COLORS.border || '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginTop: 40, 
-    fontSize: 16,
-    color: IVOO_COLORS.textPrimary || '#000',
-  },
-
-  biometricButton: {
-    marginTop: 50, 
-    padding: 15,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: IVOO_COLORS.primary,
-    alignItems: 'center',
-    width: '80%', 
-  },
-  biometricIconText: {
-    fontSize: 16,
-    color: IVOO_COLORS.primary,
-    fontWeight: 'bold',
-  },
-  biometricLabel: {
-    fontSize: 12,
-    color: IVOO_COLORS.primary,
-    marginTop: 5,
-  },
   safeArea: {
     flex: 1,
     backgroundColor: IVOO_COLORS.white,
@@ -405,6 +277,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 10,
   },
@@ -415,12 +288,12 @@ const styles = StyleSheet.create({
     lineHeight: IVOO_TEXT_STYLES.welcomeText.lineHeight,
     color: IVOO_COLORS.primary,
     textAlign: 'center',
-    marginTop: 197,
+    marginTop: 0,
   },
   logoContainer: {
     width: IVOO_SPACING.logoWidth,
     height: IVOO_SPACING.logoHeight,
-    marginTop: 10,
+    marginTop: SCREEN_HEIGHT * 0.015,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -431,7 +304,7 @@ const styles = StyleSheet.create({
   illustrationContainer: {
     width: IVOO_SPACING.illustrationWidth,
     height: IVOO_SPACING.illustrationHeight,
-    marginTop: 100,
+    marginTop: SCREEN_HEIGHT * 0.09,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -439,31 +312,108 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  // continueButton: {
-  //   marginTop: 50,
-  // },
+  continueButton: {
+    marginTop: SCREEN_HEIGHT * 0.025,
+    shadowColor: 'transparent',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+  },
   registerLink: {
-    marginTop: 25,
+    marginTop: SCREEN_HEIGHT * 0.015,
     paddingVertical: 8,
   },
   registerText: {
-    fontSize: IVOO_TEXT_STYLES.linkText.fontSize,
+    fontSize: SCREEN_WIDTH * 0.038,
     fontFamily: IVOO_TEXT_STYLES.linkText.fontFamily,
     fontWeight: IVOO_TEXT_STYLES.linkText.fontWeight,
     lineHeight: IVOO_TEXT_STYLES.linkText.lineHeight,
     color: IVOO_COLORS.primary,
     textAlign: 'center',
     includeFontPadding: false,
+    marginTop: SCREEN_HEIGHT * 0.015,
   },
-  homeIndicator: {
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  bottomSheetContent: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 24,
+    flex: 1,
+  },
+  bottomSheetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+    paddingTop: 8,
+  },
+  bottomSheetTitle: {
+    fontSize: 22,
+    fontFamily: IVOO_TYPOGRAPHY.fonts.interBold,
+    fontWeight: IVOO_TYPOGRAPHY.fontWeight.bold,
+    color: IVOO_COLORS.black,
+  },
+  closeButtonContainer: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    backgroundColor: IVOO_COLORS.grayLight,
+  },
+  bottomSheetCloseButton: {
+    fontSize: 18,
+    color: IVOO_COLORS.grayMedium,
+    fontWeight: '400',
+    lineHeight: 20,
+  },
+  bottomSheetBody: {
+    gap: 16,
+  },
+  inputContainer: {
+    width: '100%',
+    marginBottom: 0,
+  },
+  passwordInputWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  inputWrapper: {
+    width: '100%',
+  },
+  passwordInput: {
+    fontSize: SCREEN_WIDTH * 0.05342343,
+  },
+  eyeIcon: {
     position: 'absolute',
-    bottom: IVOO_SPACING.homeIndicatorBottom,
-    left: '50%',
-    marginLeft: IVOO_SPACING.homeIndicatorMargin,
-    width: IVOO_SPACING.homeIndicatorWidth,
-    height: IVOO_SPACING.homeIndicatorHeight,
-    backgroundColor: IVOO_COLORS.black,
-    borderRadius: IVOO_SPACING.homeIndicatorBorderRadius,
+    right: SCREEN_WIDTH * 0.042,
+    top: SCREEN_HEIGHT * 0.02,
+    zIndex: 1,
+  },
+  buttonContainer: {
+    position: 'relative',
+    width: '100%',
+    marginTop: 8,
+  },
+  buttonLoader: {
+    position: 'absolute',
+    left: 20,
+    top: '50%',
+    transform: [{translateY: -10}],
+    zIndex: 1,
+  },
+  loginButton: {
+    shadowColor: 'transparent',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+  },
+  loginButtonLoading: {
+    opacity: 0.8,
   },
 });
 

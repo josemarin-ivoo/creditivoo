@@ -13,6 +13,9 @@ export enum Routes {
 
   APPSCREENS = 'AppScreens',
   AUTHSCREENS = 'AuthScreens',
+  // JAMP para session creditivoo
+  AUTHCREDITIVOO = 'creditivoo_storage',
+  // end
   NAVIGATION_to_ACCOUNTSUCCESS = 'AccountSuccess',
   NAVIGATION_TO_FORGOTPASSWORD = 'ForgotPassword',
   NAVIGATION_TO_EMAIL = 'Email',
@@ -66,7 +69,7 @@ export enum Routes {
   NAVIGATION_TO_CART = 'Cart',
 
   
-  //BY JAMP 02-12-2025
+  // JAMP CREDITIVOO 02-12-2025
 
   NAVIGATION_CREDITIVOO = 'CreditivooLogin',
   NAVIGATION_REGISTER = 'Register',
@@ -76,7 +79,26 @@ export enum Routes {
   NAVIGATION_PASSWORD = 'Password',
   NAVIGATION_REGISTRATION_SUCCESS = 'RegistrationSuccess',
   NAVIGATION_CREDITIVOO_HOME = 'Home',
-  //END BY JAMP 02-12-2025
+  NAVIGATION_IDVERIFICATION = 'IdentityVerificator',
+  NAVIGATION_IDFRONTREQUEST = 'IdFrontRequest',
+  NAVIGATION_IDBACKREQUEST = 'IdBackRequest',
+  NAVIGATION_SELFIEREQUEST = 'SelfieRequest',
+  NAVIGATION_TERMS = 'Terms',
+  NAVIGATION_PERSONALINFO = 'PersonalInfoForm',
+  NAVIGATION_REFERRALCODE = 'ReferralCodeForm',
+  NAVIGATION_CREDITVALIDATION = 'CreditValidation',
+  NAVIGATION_CREDITCONFIRMATION = 'CreditConfirmation',
+  NAVIGATION_HELP = 'Help',
+  NAVIGATION_SETTINGS = 'Settings',
+  NAVIGATION_SECURITY = 'Security',
+  NAVIGATION_NOTIFICATIONS = 'Notification',
+  NAVIGATION_TABCREDITIVOO = 'MainTabs',
+  NAVIGATION_MYPURCHASES = 'MyPurchases',
+  NAVIGATION_GEMS = 'Gems',
+  NAVIGATION_PROFILE = 'Profile',
+
+  // TAB
+  //END JAMP 02-12-2025
 
 
   CARTPRODUCTLIST = 'CartProductList',

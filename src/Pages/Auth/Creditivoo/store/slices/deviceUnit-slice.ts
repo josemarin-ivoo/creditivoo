@@ -3,7 +3,7 @@ import {
   updateDeviceUnit,
   DeviceUnitData,
   DeviceUnitResponse,
-} from '../../services/api/deviceUnit';
+} from '@services/api/deviceUnit';
 
 interface DeviceUnitState {
   isLoading: boolean;
@@ -63,7 +63,7 @@ const deviceUnitSlice = createSlice({
       .addCase(submitDeviceUnit.rejected, (state, action) => {
         state.isLoading = false;
         if (action.payload) {
-          state.error = (action.payload as { message: string }).message;
+          state.error = action.payload.message;
         } else {
           state.error = action.error.message || 'Failed to update device unit';
         }

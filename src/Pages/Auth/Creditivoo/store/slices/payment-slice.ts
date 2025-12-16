@@ -10,7 +10,7 @@ import {
   createPaymentReference,
   getExchangeRate,
   ExchangeRate,
-} from '../../services/api/payments';
+} from '@services/api/payments';
 
 interface PaymentState {
   isLoading: boolean;
@@ -71,9 +71,7 @@ export const fetchPaymentsByPurchaseIds = createAsyncThunk(
     try {
       const promises = purchaseIds.map(id => getPaymentsByPurchaseId(id));
       const results = await Promise.all(promises);
-      // return results.flat();
-      return results.reduce((acc, val) => acc.concat(val), []);
-
+      return results.flat();
     } catch (err: any) {
       if (!err.response) {
         throw err;
@@ -258,7 +256,7 @@ const paymentSlice = createSlice({
       .addCase(updatePayment.rejected, (state, action) => {
         state.isLoading = false;
         if (action.payload) {
-          state.error = (action.payload as { message: string }).message;
+          state.error = action.payload.message;
         } else {
           state.error = action.error.message || 'Failed to update payment';
         }

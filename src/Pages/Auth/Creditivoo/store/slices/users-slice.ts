@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { User } from '../../services/api/auth';
+import { User } from '@services/api/auth';
 import {
   SendUser,
   UserResponse,
@@ -7,7 +7,7 @@ import {
   getUserByEmailApi,
   updateUserDocumentApi,
   updateUserSelfieApi,
-} from '../../services/api/users';
+} from '@services/api/users';
 
 interface UserState {
   user: Partial<SendUser> | User;
@@ -114,8 +114,7 @@ const userSlice = createSlice({
       .addCase(createUser.rejected, (state, action) => {
         state.status = 'failed';
         if (action.payload) {
-          // state.error = action.payload.message;
-          state.error = (action.payload as { message: string }).message;
+          state.error = action.payload.message;
         } else {
           state.error = action.error.message || 'Failed to create user';
         }
@@ -135,8 +134,7 @@ const userSlice = createSlice({
       .addCase(getUserByEmail.rejected, (state, action) => {
         state.status = 'failed';
         if (action.payload) {
-          // state.error = action.payload.message;
-          state.error = (action.payload as { message: string }).message;
+          state.error = action.payload.message;
         } else {
           state.error = action.error.message || 'Failed to fetch user by email';
         }

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getTermsAndConditionsByID, TermsAndConditionsResponse } from '../../services/api/termsAndConditions';
+import { getTermsAndConditionsByID, TermsAndConditionsResponse } from '@services/api/termsAndConditions';
 
 interface TermsAndConditionsState {
   termsAndConditions: TermsAndConditionsResponse | null;

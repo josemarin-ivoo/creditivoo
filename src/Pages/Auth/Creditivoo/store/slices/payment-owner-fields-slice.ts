@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {PaymentMethodModel, getPaymentMethods} from '../../services/api/payments';
+import {PaymentMethodModel, getPaymentMethods} from '@services/api/payments';
 
 interface PaymentMethodsState {
   methods: PaymentMethodModel[];

@@ -5,7 +5,7 @@ import {
   PurchaseResponse,
   getPurchasesByUserId,
   acceptTermsAndConditions as acceptTermsAndConditionsAPI,
-} from '../../services/api/purchases';
+} from '@services/api/purchases';
 
 interface PurchaseState {
   isLoading: boolean;
@@ -132,8 +132,7 @@ const purchaseSlice = createSlice({
           state.userPurchases = [];
           state.error = null;
         } else if (action.payload) {
-          state.error = (action.payload as { message: string }).message;
-          // state.error = action.payload.message;
+          state.error = action.payload.message;
         } else {
           state.error =
             action.error.message || 'Failed to fetch Purchases By User Id';

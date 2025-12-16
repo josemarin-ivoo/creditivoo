@@ -5,7 +5,7 @@ import {
   fetchExchangeRates,
   fetchFinancingOptions,
   fetchFinancingOptionsByPriceId,
-} from '../../services/api/financing';
+} from '@services/api/financing';
 
 interface FinancingState {
   financingOptions: FinancingOption[];

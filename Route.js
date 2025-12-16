@@ -54,8 +54,10 @@ import HelpScreen from './src/Pages/Auth/Creditivoo/views/help/HelpScreen';
 import SettingScreen from './src/Pages/Auth/Creditivoo/views/settings/SettingScreen';
 import SecurityScreen from './src/Pages/Auth/Creditivoo/views/settings/SecurityScreen';
 import NotificationScreen from './src/Pages/Auth/Creditivoo/views/notifications/NotificationScreen';
-
+import PurchasesScreen from './src/Pages/Auth/Creditivoo/views/purchases/MyPurchasesScreen';
+import GemsScreen from './src/Pages/Auth/Creditivoo/views/gem/GemsScreen';
 import MainTabsCreditivoo from './src/Pages/Auth/Creditivoo/navigation/TabsNavigation';
+import ProfileScreen from './src/Pages/Auth/Creditivoo/views/profile/ProfileScreen';
 
 // import CreditivooLogin from './src/Pages/Auth/Creditivoo/CreditivooLogin'; // revisar a donde va a abrir 
 
@@ -601,7 +603,11 @@ const Route = () => {
           options={{headerShown: false}}
         />
 
-        
+        <Stack.Screen
+          name={Routes.NAVIGATION_PROFILE}
+          component={ProfileScreen}
+          options={{headerShown: false}}
+        />
 
 
         <Stack.Screen
@@ -622,6 +628,18 @@ const Route = () => {
         <Stack.Screen
           name={Routes.NAVIGATION_NOTIFICATIONS}
           component={NotificationScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name={Routes.NAVIGATION_MYPURCHASES}
+          component={PurchasesScreen}
+          options={{headerShown: false}}
+        />
+
+        <Stack.Screen
+          name={Routes.NAVIGATION_GEMS}
+          component={GemsScreen}
           options={{headerShown: false}}
         />
 
